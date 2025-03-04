@@ -12,9 +12,6 @@ export default defineConfig({
     }),
   ],
   test: {
-    // coverage: {
-    //   reporter: ["text", "clover", "json"],
-    // },
     include: ["./test-api/*.test.ts"],
     globalSetup: "./global-setup.ts",
   },

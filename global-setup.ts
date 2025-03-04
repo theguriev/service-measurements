@@ -44,9 +44,8 @@ const ctx: Context = {
   rootDir: fixtureDir,
   outDir: resolve(fixtureDir, presetTmpDir, ".output"),
   env: {
-    NITRO_BOT_TOKEN: "7826411058:AAEZYZPTy4hYe3WLDhhSL79VLMwvlw2JHbc",
-    CUSTOM_HELLO_THERE: "general",
     SECRET: "gurievcreative",
+    PORT: "4000",
   },
   fetch: (url, opts): Promise<Response> =>
     $fetch(joinURL(ctx.server!.url, url.slice(1)), {

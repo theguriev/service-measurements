@@ -5,9 +5,9 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/login": {
+    "/measurement": {
       "post": {
-        "summary": "Login using Telegram credentials",
+        "summary": "Add a new measurement",
         "requestBody": {
           "required": true,
           "content": {
@@ -15,293 +15,40 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "id": {
+                  "timestamp": {
                     "type": "integer",
-                    "example": 123456789
+                    "description": "Timestamp of the measurement (defaults to current time)"
                   },
-                  "firstName": {
+                  "type": {
                     "type": "string",
-                    "example": "John"
+                    "description": "Type of measurement"
                   },
-                  "lastName": {
-                    "type": "string",
-                    "example": "Doe"
+                  "value": {
+                    "type": "number",
+                    "description": "Value of the measurement"
                   },
-                  "username": {
-                    "type": "string",
-                    "example": "johndoe"
-                  },
-                  "photoUrl": {
-                    "type": "string",
-                    "example": "https://example.com/photo.jpg"
-                  },
-                  "authDate": {
-                    "type": "integer",
-                    "example": 1620000000
-                  },
-                  "hash": {
-                    "type": "string",
-                    "example": "abcdef123456"
-                  }
-                },
-                "required": [
-                  "id",
-                  "firstName",
-                  "lastName",
-                  "username",
-                  "photoUrl",
-                  "authDate",
-                  "hash"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful login",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "integer"
-                    },
-                    "firstName": {
-                      "type": "string"
-                    },
-                    "lastName": {
-                      "type": "string"
-                    },
-                    "username": {
-                      "type": "string"
-                    },
-                    "photoUrl": {
-                      "type": "string"
-                    },
-                    "authDate": {
-                      "type": "integer"
-                    },
-                    "hash": {
-                      "type": "string"
-                    },
-                    "timestamp": {
-                      "type": "integer"
-                    },
-                    "meta": {
-                      "type": "object"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Invalid user hash",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Invalid user hash!"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/": {
-      "get": {
-        "summary": "Get user details",
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "_id": {
-                      "type": "string"
-                    },
-                    "id": {
-                      "type": "integer"
-                    },
-                    "firstName": {
-                      "type": "string"
-                    },
-                    "lastName": {
-                      "type": "string"
-                    },
-                    "username": {
-                      "type": "string"
-                    },
-                    "photoUrl": {
-                      "type": "string"
-                    },
-                    "authDate": {
-                      "type": "integer"
-                    },
-                    "hash": {
-                      "type": "string"
-                    },
-                    "timestamp": {
-                      "type": "integer"
-                    },
-                    "meta": {
-                      "type": "object"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "User not exists",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "User not exists!"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/refresh": {
-      "get": {
-        "summary": "Refresh user tokens",
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "_id": {
-                      "type": "string"
-                    },
-                    "id": {
-                      "type": "integer"
-                    },
-                    "firstName": {
-                      "type": "string"
-                    },
-                    "lastName": {
-                      "type": "string"
-                    },
-                    "username": {
-                      "type": "string"
-                    },
-                    "photoUrl": {
-                      "type": "string"
-                    },
-                    "authDate": {
-                      "type": "integer"
-                    },
-                    "hash": {
-                      "type": "string"
-                    },
-                    "timestamp": {
-                      "type": "integer"
-                    },
-                    "meta": {
-                      "type": "object"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Refresh token not found or user not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Refresh token not found!"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/update-meta": {
-      "put": {
-        "summary": "Update user meta information",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
                   "meta": {
                     "type": "object",
-                    "additionalProperties": true
+                    "description": "Additional metadata for the measurement"
                   }
                 },
-                "required": ["meta"]
+                "required": ["type", "value"]
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Successful operation",
+            "description": "Measurement added successfully",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "_id": {
-                      "type": "string"
+                    "success": {
+                      "type": "boolean"
                     },
-                    "id": {
-                      "type": "integer"
-                    },
-                    "firstName": {
-                      "type": "string"
-                    },
-                    "lastName": {
-                      "type": "string"
-                    },
-                    "username": {
-                      "type": "string"
-                    },
-                    "photoUrl": {
-                      "type": "string"
-                    },
-                    "authDate": {
-                      "type": "integer"
-                    },
-                    "hash": {
-                      "type": "string"
-                    },
-                    "timestamp": {
-                      "type": "integer"
-                    },
-                    "meta": {
+                    "measurement": {
                       "type": "object"
                     }
                   }
@@ -309,44 +56,11 @@
               }
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
           "409": {
-            "description": "User not exists",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "User not exists!"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/logout": {
-      "get": {
-        "summary": "Logout user",
-        "responses": {
-          "200": {
-            "description": "Successful logout",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "User logged out successfully"
-                    }
-                  }
-                }
-              }
-            }
+            "description": "User not found"
           }
         }
       }
