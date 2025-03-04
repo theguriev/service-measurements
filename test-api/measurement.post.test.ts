@@ -14,7 +14,6 @@ describe.sequential("Measurement", () => {
     { userId: 123 },
     { secret: process.env.SECRET }
   );
-  console.log("log: ", process.env.SECRET, validAccessToken);
 
   describe("POST /measurement", () => {
     it("gets 400 on validation errors", async () => {
@@ -45,6 +44,46 @@ describe.sequential("Measurement", () => {
         onResponse: ({ response }) => {
           expect(response.status).toBe(200);
           expect(response._data.measurement).toMatchObject(measurementBody);
+        },
+      });
+    });
+  });
+
+  describe("GET /measurement", () => {
+    it("gets 400 on validation errors", async () => {
+      await $fetch("/measurement", {
+        baseURL,
+        method: "GET",
+        ignoreResponseError: true,
+        headers: {
+          Accept: "application/json",
+          Cookie: `accessToken=${validAccessToken};`,
+        },
+        query: { type: "" },
+        onResponse: ({ response }) => {
+          expect(response.status).toBe(400);
+        },
+      });
+    });
+
+    it("gets 200 on valid query parameters", async () => {
+      await $fetch("/measurement", {
+        baseURL,
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Cookie: `accessToken=${validAccessToken};`,
+        },
+        query: {
+          type: "temperature",
+          sort: "asc",
+          offset: 0,
+          limit: 10,
+        },
+        onResponse: ({ response }) => {
+          expect(response.status).toBe(200);
+          expect(response._data).toHaveProperty("measurements");
+          expect(Array.isArray(response._data.measurements)).toBe(true);
         },
       });
     });
