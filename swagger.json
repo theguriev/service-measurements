@@ -130,6 +130,69 @@
             "description": "Validation error"
           }
         }
+      },
+      "put": {
+        "summary": "Update a measurement",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "timestamp": {
+                    "type": "integer",
+                    "description": "Timestamp of the measurement"
+                  },
+                  "type": {
+                    "type": "string",
+                    "description": "Type of measurement"
+                  },
+                  "meta": {
+                    "type": "object",
+                    "description": "Additional metadata for the measurement"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Measurement updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "measurement": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "404": {
+            "description": "Measurement not found or not authorized"
+          }
+        }
       }
     }
   }

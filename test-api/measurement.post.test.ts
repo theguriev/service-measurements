@@ -9,6 +9,8 @@ const measurementBody = {
   },
 };
 
+let measurementId = undefined;
+
 describe.sequential("Measurement", () => {
   const validAccessToken = issueAccessToken(
     { userId: 123 },
@@ -44,6 +46,7 @@ describe.sequential("Measurement", () => {
         onResponse: ({ response }) => {
           expect(response.status).toBe(200);
           expect(response._data.measurement).toMatchObject(measurementBody);
+          measurementId = response._data.measurement._id;
         },
       });
     });
@@ -84,6 +87,70 @@ describe.sequential("Measurement", () => {
           expect(response.status).toBe(200);
           expect(response._data).toHaveProperty("measurements");
           expect(Array.isArray(response._data.measurements)).toBe(true);
+        },
+      });
+    });
+  });
+
+  describe("PUT /measurement/:id", () => {
+    it("gets 400 on validation errors", async () => {
+      await $fetch(`/measurement/${measurementId}`, {
+        baseURL,
+        method: "PUT",
+        ignoreResponseError: true,
+        headers: {
+          Accept: "application/json",
+          Cookie: `accessToken=${validAccessToken};`,
+        },
+        body: {},
+        onResponse: ({ response }) => {
+          expect(response.status).toBe(400);
+        },
+      });
+    });
+
+    it("gets 200 on valid update data", async () => {
+      await $fetch(`/measurement/${measurementId}`, {
+        baseURL,
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          Cookie: `accessToken=${validAccessToken};`,
+        },
+        body: {
+          type: "humidity",
+          meta: {
+            unit: "Percentage",
+            location: "office",
+          },
+        },
+        onResponse: ({ response }) => {
+          expect(response.status).toBe(200);
+          expect(response._data).toHaveProperty("measurement");
+          expect(response._data.measurement.type).toBe("humidity");
+          expect(response._data.measurement.meta.unit).toBe("Percentage");
+        },
+      });
+    });
+
+    it("gets 404 if measurement not found or not authorized", async () => {
+      await $fetch(`/measurement/invalidMeasurementId`, {
+        baseURL,
+        method: "PUT",
+        ignoreResponseError: true,
+        headers: {
+          Accept: "application/json",
+          Cookie: `accessToken=${validAccessToken};`,
+        },
+        body: {
+          type: "humidity",
+          meta: {
+            unit: "Percentage",
+            location: "office",
+          },
+        },
+        onResponse: ({ response }) => {
+          expect(response.status).toBe(404);
         },
       });
     });
