@@ -10,7 +10,7 @@ export default eventHandler(async (event) => {
   const { type, sort, offset, limit } = getQuery(event);
   const convertedOffset = Number(offset);
   const convertedLimit = Number(limit);
-  const query = await zodValidateData(
+  await zodValidateData(
     {
       type,
       sort,
