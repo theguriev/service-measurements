@@ -6,6 +6,7 @@ const querySchema = z.object({
 });
 
 export default eventHandler(async (event) => {
+  const _id = await getUserId(event);
   const { type, sort, offset, limit } = getQuery(event);
   const convertedOffset = Number(offset);
   const convertedLimit = Number(limit);
@@ -19,7 +20,7 @@ export default eventHandler(async (event) => {
     querySchema.parse
   );
 
-  const measurements = await ModelMeasurement.find({ type })
+  const measurements = await ModelMeasurement.find({ type, userId: _id })
     .sort({ createdAt: sort === "asc" ? 1 : -1 })
     .skip(convertedOffset)
     .limit(convertedLimit);
