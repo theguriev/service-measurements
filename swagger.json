@@ -191,7 +191,7 @@
             "type": "boolean"
           },
           "measurement": {
-            "type": "object"
+            "$ref": "#/components/schemas/Measurement"
           }
         }
       },
@@ -204,7 +204,7 @@
           "measurements": {
             "type": "array",
             "items": {
-              "type": "object"
+              "$ref": "#/components/schemas/Measurement"
             }
           }
         }
