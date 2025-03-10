@@ -13,26 +13,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "timestamp": {
-                    "type": "integer",
-                    "description": "Timestamp of the measurement (defaults to current time)"
-                  },
-                  "type": {
-                    "type": "string",
-                    "description": "Type of measurement"
-                  },
-                  "value": {
-                    "type": "number",
-                    "description": "Value of the measurement"
-                  },
-                  "meta": {
-                    "type": "object",
-                    "description": "Additional metadata for the measurement"
-                  }
-                },
-                "required": ["type", "value"]
+                "$ref": "#/components/schemas/Measurement"
               }
             }
           }
@@ -43,15 +24,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "measurement": {
-                      "type": "object"
-                    }
-                  }
+                  "$ref": "#/components/schemas/MeasurementResponse"
                 }
               }
             }
@@ -110,18 +83,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "measurements": {
-                      "type": "array",
-                      "items": {
-                        "type": "object"
-                      }
-                    }
-                  }
+                  "$ref": "#/components/schemas/MeasurementsResponse"
                 }
               }
             }
@@ -148,21 +110,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "timestamp": {
-                    "type": "integer",
-                    "description": "Timestamp of the measurement"
-                  },
-                  "type": {
-                    "type": "string",
-                    "description": "Type of measurement"
-                  },
-                  "meta": {
-                    "type": "object",
-                    "description": "Additional metadata for the measurement"
-                  }
-                }
+                "$ref": "#/components/schemas/Measurement"
               }
             }
           }
@@ -173,15 +121,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "measurement": {
-                      "type": "object"
-                    }
-                  }
+                  "$ref": "#/components/schemas/MeasurementResponse"
                 }
               }
             }
@@ -191,6 +131,92 @@
           },
           "404": {
             "description": "Measurement not found or not authorized"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a measurement",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Measurement deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Measurement not found or not authorized"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Measurement": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "description": "Timestamp of the measurement (defaults to current time)"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of measurement"
+          },
+          "meta": {
+            "type": "object",
+            "description": "Additional metadata for the measurement"
+          }
+        },
+        "required": ["type"]
+      },
+      "MeasurementResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "measurement": {
+            "type": "object"
+          }
+        }
+      },
+      "MeasurementsResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "measurements": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "DeleteResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
           }
         }
       }
