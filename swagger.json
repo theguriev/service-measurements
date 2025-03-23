@@ -179,7 +179,10 @@
           },
           "meta": {
             "type": "object",
-            "description": "Additional metadata for the measurement"
+            "description": "Additional metadata for the measurement",
+            "additionalProperties": {
+              "oneOf": [{ "type": "string" }, { "type": "number" }]
+            }
           }
         },
         "required": ["type"]
