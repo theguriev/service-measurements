@@ -171,8 +171,12 @@
             "type": "object",
             "description": "Additional metadata for the measurement",
             "additionalProperties": {
-              "anyOf": [{ "type": "string" }, { "type": "number" }, { "type": "boolean" }],
-              "nullable": true,
+              "anyOf": [
+                { "type": "string" },
+                { "type": "number" },
+                { "type": "boolean" }
+              ],
+              "nullable": true
             }
           }
         },
