@@ -92,7 +92,9 @@
             "description": "Validation error"
           }
         }
-      },
+      }
+    },
+    "/measurement/{id}": {
       "put": {
         "summary": "Update a measurement",
         "parameters": [
@@ -133,34 +135,6 @@
             "description": "Measurement not found or not authorized"
           }
         }
-      },
-      "delete": {
-        "summary": "Delete a measurement",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Measurement deleted successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeleteResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Measurement not found or not authorized"
-          }
-        }
       }
     }
   },
@@ -169,6 +143,22 @@
       "Measurement": {
         "type": "object",
         "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Identifier of measurement"
+          },
+          "_v": {
+            "type": "number",
+            "description": "Version of measurement"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Creation timestamp of measurement (ISO string)"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Update timestamp of measurement (ISO string)"
+          },
           "timestamp": {
             "type": "integer",
             "description": "Timestamp of the measurement (defaults to current time)"
@@ -181,7 +171,8 @@
             "type": "object",
             "description": "Additional metadata for the measurement",
             "additionalProperties": {
-              "oneOf": [{ "type": "string" }, { "type": "number" }]
+              "anyOf": [{ "type": "string" }, { "type": "number" }, { "type": "boolean" }],
+              "nullable": true,
             }
           }
         },
@@ -209,17 +200,6 @@
             "items": {
               "$ref": "#/components/schemas/Measurement"
             }
-          }
-        }
-      },
-      "DeleteResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean"
-          },
-          "message": {
-            "type": "string"
           }
         }
       }
