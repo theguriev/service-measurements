@@ -10,7 +10,7 @@ export default eventHandler(async (event) => {
     _id = await getUserId(event);
   } catch (error) {
     throw createError({
-      message: "User not authprized",
+      message: "User not authorized",
       status: 401,
     });
   }
