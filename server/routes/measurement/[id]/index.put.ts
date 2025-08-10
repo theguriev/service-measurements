@@ -3,7 +3,7 @@ import { z } from "zod";
 const updateMeasurementSchema = z.object({
   timestamp: z.number().default(() => Date.now()),
   type: z.string(),
-  meta: z.record(z.any()),
+  meta: z.record(z.string(), z.any()).default({}),
 });
 
 export default eventHandler(async (event) => {

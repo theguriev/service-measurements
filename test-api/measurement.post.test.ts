@@ -13,7 +13,11 @@ let measurementId = undefined;
 
 describe.sequential("Measurement", () => {
   const validAccessToken = issueAccessToken(
-    { userId: 123 },
+    { userId: 123, role: "user" },
+    { secret: process.env.SECRET }
+  );
+  const validAdminAccessToken = issueAccessToken(
+    { userId: 456, role: "admin" },
     { secret: process.env.SECRET }
   );
 
@@ -87,6 +91,70 @@ describe.sequential("Measurement", () => {
           expect(response.status).toBe(200);
           expect(response._data).toHaveProperty("measurements");
           expect(Array.isArray(response._data.measurements)).toBe(true);
+        },
+      });
+    });
+  });
+
+  describe("GET /measurement/:id", () => {
+    it("gets 400 on invalid measurement ID", async () => {
+      await $fetch("/measurement/invalidId", {
+        baseURL,
+        method: "GET",
+        ignoreResponseError: true,
+        headers: {
+          Accept: "application/json",
+          Cookie: `accessToken=${validAccessToken};`,
+        },
+        onResponse: ({ response }) => {
+          expect(response.status).toBe(400);
+        },
+      });
+    });
+
+    it("gets 401 if not authorized", async () => {
+      await $fetch(`/measurement/${measurementId}`, {
+        baseURL,
+        method: "GET",
+        ignoreResponseError: true,
+        headers: {
+          Accept: "application/json",
+          Cookie: `accessToken=invalidAccessToken;`,
+        },
+        onResponse: ({ response }) => {
+          expect(response.status).toBe(401);
+        },
+      });
+    });
+
+    it("gets 404 if measurement not found", async () => {
+      await $fetch("/measurement/6524b8e2f3c8a2d9c4e7a1b3", {
+        baseURL,
+        method: "GET",
+        ignoreResponseError: true,
+        headers: {
+          Accept: "application/json",
+          Cookie: `accessToken=${validAccessToken};`,
+        },
+        onResponse: ({ response }) => {
+          expect(response.status).toBe(404);
+        },
+      });
+    });
+
+    it("gets 200 on valid measurement ID", async () => {
+      await $fetch(`/measurement/${measurementId}`, {
+        baseURL,
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Cookie: `accessToken=${validAccessToken};`,
+        },
+        onResponse: ({ response }) => {
+          expect(response.status).toBe(200);
+          expect(response._data.measurement).toHaveProperty("_id", measurementId);
+          expect(response._data.measurement.type).toBe(measurementBody.type);
+          expect(response._data.measurement.meta).toEqual(measurementBody.meta);
         },
       });
     });

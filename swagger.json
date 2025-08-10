@@ -135,6 +135,41 @@
             "description": "Measurement not found or not authorized"
           }
         }
+      },
+      "get": {
+        "summary": "Get a specific measurement by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The ID of the measurement to retrieve"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Measurement retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeasurementResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Measurement not found"
+          }
+        }
       }
     }
   },
