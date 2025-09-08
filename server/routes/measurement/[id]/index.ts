@@ -15,10 +15,11 @@ export default eventHandler(async (event) => {
     });
   }
   const { id } = await zodValidateData(getRouterParams(event), pathSchema.parse);
-  const role = await getUserRole(event);
+  const { authorizationBase } = useRuntimeConfig();
+  const user = await getInitialUser(event, authorizationBase);
 
   const measurement = await ModelMeasurement.findOne(
-     role !== "admin" ? { _id: id, userId: _id } : { _id: id }
+     can(user, "get-all-measurements") ? { _id: id } : { _id: id, userId: _id }
   );
   if (!measurement) {
     throw createError({
