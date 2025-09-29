@@ -1,20 +1,23 @@
-import { tmpdir } from "node:os";
-import { promises as fsp } from "node:fs";
-import {
-  createNitro,
-  build,
-  prepare,
-  copyPublicAssets,
-  prerender,
-} from "nitropack";
-import type { Nitro } from "nitropack";
-import { join, resolve } from "pathe";
 import { listen, Listener } from "listhen";
-import { $fetch } from "ofetch";
-import type { FetchOptions } from "ofetch";
 import { fileURLToPath } from "mlly";
-import { joinURL } from "ufo";
 import { MongoMemoryServer } from "mongodb-memory-server";
+import mongoose from "mongoose";
+import type { Nitro } from "nitropack";
+import {
+    build,
+    copyPublicAssets,
+    createNitro,
+    prepare,
+    prerender,
+} from "nitropack";
+import { promises as fsp } from "node:fs";
+import { tmpdir } from "node:os";
+import type { FetchOptions } from "ofetch";
+import { $fetch } from "ofetch";
+import { join, resolve } from "pathe";
+import { joinURL } from "ufo";
+import { adminId, regularId } from "./constants";
+import { clearTestData, seedTestData } from "./test-db-setup";
 
 interface Context {
   preset: string;
@@ -46,6 +49,18 @@ const ctx: Context = {
   env: {
     SECRET: "gurievcreative",
     PORT: "4000",
+    VALID_ADMIN_ACCESS_TOKEN: issueAccessToken(
+      { userId: adminId, role: "admin", id: adminId },
+      { secret: "gurievcreative" }
+    ),
+    VALID_REGULAR_ACCESS_TOKEN: issueAccessToken(
+      { userId: regularId, role: "user", id: regularId },
+      { secret: "gurievcreative" }
+    ),
+    VALID_ADMIN_ACCESS_TOKEN_WITH_REGULAR_ID: issueAccessToken(
+      { userId: regularId, role: "admin", id: adminId },
+      { secret: "gurievcreative" }
+    ),
   },
   fetch: (url, opts): Promise<Response> =>
     $fetch(joinURL(ctx.server!.url, url.slice(1)), {
@@ -62,6 +77,11 @@ export const setup = async () => {
   const mongod = await MongoMemoryServer.create();
   ctx.mongo = mongod;
   ctx.env.NITRO_MONGO_URI = mongod.getUri();
+
+  await mongoose.connect(ctx.env.NITRO_MONGO_URI);
+
+  await clearTestData();
+  await seedTestData();
 
   // Set environment variables for process compatible presets
   for (const [name, value] of Object.entries(ctx.env)) {

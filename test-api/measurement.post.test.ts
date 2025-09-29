@@ -12,14 +12,13 @@ const measurementBody = {
 let measurementId = undefined;
 
 describe.sequential("Measurement", () => {
-  const validAccessToken = issueAccessToken(
-    { userId: 123, role: "user" },
-    { secret: process.env.SECRET }
-  );
-  const validAdminAccessToken = issueAccessToken(
-    { userId: 456, role: "admin" },
-    { secret: process.env.SECRET }
-  );
+  let validAccessToken: string;
+  let validAdminAccessToken: string;
+
+  beforeAll(async () => {
+    validAccessToken = process.env.VALID_REGULAR_ACCESS_TOKEN;
+    validAdminAccessToken = process.env.VALID_ADMIN_ACCESS_TOKEN;
+  });
 
   describe("POST /measurement", () => {
     it("gets 400 on validation errors", async () => {
