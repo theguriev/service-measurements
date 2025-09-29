@@ -1,11 +1,12 @@
 import { isPlainObject } from "es-toolkit";
 import {
     H3Error,
+    MultiPartData,
     type H3Event,
     type HTTPHeaderName,
     type HTTPMethod,
 } from "h3";
-import { HydratedDocument } from "mongoose";
+import { HydratedDocument, InferSchemaType } from "mongoose";
 import util from "util";
 import { createLogger, format, transport, transports } from "winston";
 import LokiTransport from "winston-loki";
@@ -155,9 +156,20 @@ const getLoggerInstance = async (
 
   let formData: FormData | undefined = undefined;
   try {
-    formData = await readFormData(event);
+    if (getHeader(event, "content-type").toLowerCase().includes("application/x-www-form-urlencoded")) {
+      formData = await readFormData(event);
+    }
   } catch (error) {
     formData = undefined;
+  }
+
+  let multipartFormData: MultiPartData[] | undefined = undefined;
+  try {
+    if (getHeader(event, "content-type").toLowerCase().includes("multipart/form-data")) {
+      multipartFormData = await readMultipartFormData(event);
+    }
+  } catch (error) {
+    multipartFormData = undefined;
   }
 
   const loggerTransports: transport[] = [
@@ -214,6 +226,7 @@ const getLoggerInstance = async (
         rawBody,
         fingerprint,
         formData,
+        multipartFormData,
       },
       user,
     },
