@@ -9,12 +9,13 @@ export default defineNitroConfig({
     mongoUri: "mongodb://root:example@localhost:27017/",
     botToken: "",
     secret: "gurievcreative",
+    lokiHost: "http://localhost:3100",
+    lokiBasicAuth: undefined as string | undefined,
   },
   imports: {
     imports: [
       ...(await importsHelper("./db/model")),
       ...(await importsHelper("./db/schema", camelCase)),
-      { name: "InferSchemaType", from: "mongoose", type: true },
       { name: "parse", from: "set-cookie-parser" },
     ],
     presets: [
