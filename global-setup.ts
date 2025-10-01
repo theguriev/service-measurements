@@ -1,20 +1,20 @@
-import { tmpdir } from "node:os";
-import { promises as fsp } from "node:fs";
-import {
-  createNitro,
-  build,
-  prepare,
-  copyPublicAssets,
-  prerender,
-} from "nitropack";
-import type { Nitro } from "nitropack";
-import { join, resolve } from "pathe";
 import { listen, Listener } from "listhen";
-import { $fetch } from "ofetch";
-import type { FetchOptions } from "ofetch";
 import { fileURLToPath } from "mlly";
-import { joinURL } from "ufo";
 import { MongoMemoryServer } from "mongodb-memory-server";
+import type { Nitro } from "nitropack";
+import {
+    build,
+    copyPublicAssets,
+    createNitro,
+    prepare,
+    prerender,
+} from "nitropack";
+import { promises as fsp } from "node:fs";
+import { tmpdir } from "node:os";
+import type { FetchOptions } from "ofetch";
+import { $fetch } from "ofetch";
+import { join, resolve } from "pathe";
+import { joinURL } from "ufo";
 
 interface Context {
   preset: string;
@@ -46,6 +46,7 @@ const ctx: Context = {
   env: {
     SECRET: "gurievcreative",
     PORT: "4000",
+    NITRO_AUTHORIZATION_BASE: "http://localhost:3001/",
   },
   fetch: (url, opts): Promise<Response> =>
     $fetch(joinURL(ctx.server!.url, url.slice(1)), {

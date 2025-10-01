@@ -13,10 +13,14 @@ export default eventHandler(async (event) => {
     event,
     updateMeasurementSchema.parse
   );
+  const { authorizationBase } = useRuntimeConfig();
+  const user = await getInitialUser(event, authorizationBase);
 
   try {
     const updatedMeasurement = await ModelMeasurement.findOneAndUpdate(
-      { _id: measurementId, userId: _id },
+      can(user, "update-all-measurements")
+        ? { _id: measurementId }
+        : { _id: measurementId, userId: _id },
       { $set: updateData },
       { new: true }
     );
