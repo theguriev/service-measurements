@@ -1,4 +1,1 @@
-export default [
-  "get-all-measurements",
-  "update-all-measurements"
-] as const;
+export default ["get-all-measurements", "update-all-measurements"] as const;
